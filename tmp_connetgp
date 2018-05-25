@@ -1,0 +1,27 @@
+package main
+
+import (
+    "fmt"
+    "time"
+
+    "k8s.io/client-go/kubernetes"
+    "k8s.io/client-go/pkg/apis/clientauthentication"
+    "k8s.io/client-go/rest"
+)
+var (
+    kubeconfig = flag.String("kubeconfig", "./config", "absolute path to the kubeconfig file")
+)
+
+func main() {
+    flag.Parse()
+    // uses the current context in kubeconfig
+    config, err := clientcmd.BuildConfigFromFlags("https://master.example.com:8443", *kubeconfig)
+    if err != nil {
+        panic(err.Error())
+    }
+    // creates the clientset
+    clientset, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        panic(err.Error())
+    }
+}
