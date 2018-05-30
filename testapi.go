@@ -4,8 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/api/resource"
+	//"k8s.io/apimachinery/pkg/api/resource" //create pods
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr" //create services
 	"k8s.io/client-go/kubernetes"
 	apiv1 "k8s.io/client-go/pkg/api/v1"
 	"k8s.io/client-go/tools/clientcmd"
@@ -128,35 +129,36 @@ func main() {
 	}
 	fmt.Printf("Create a new Pod: %s\n", podresult.ObjectMeta.Name)*/
 	//create service
-	service := new(apiv1.Service)
+	/*service := new(apiv1.Service)
 	service.TypeMeta = metav1.TypeMeta{Kind: "Service", APIVersion: "v1"}
 	service.ObjectMeta = metav1.ObjectMeta{Name: "hello-service", Namespace: "k8s-test", Labels: map[string]string{"name": "hello-service"}}
 	svcSpec := apiv1.ServiceSpec{
 		Ports: []apiv1.ServicePort{
 			apiv1.ServicePort{
-				Name: "app1",
-				Port: 22,
-				TargetPort: 22,
-				Protocol: apiv1.ProtocolTCP
+				Name:       "app1",
+				Port:       22,
+				TargetPort: intstr.FromInt(22),
+				Protocol:   apiv1.ProtocolTCP,
 			},
 			apiv1.ServicePort{
-				Name: "app2",
-				Port: 9000,
-				TargetPort: 9000,
-				Protocol: apiv1.ProtocolTCP
-			}
+				Name:       "app2",
+				Port:       9000,
+				TargetPort: intstr.FromInt(9000),
+				Protocol:   apiv1.ProtocolTCP,
+			},
 		},
-		Selector: map[string]string{"name": "hello-pod"},
-		Type: apiv1.ServiceTypeClusterIP,
-		SessionAffinity: apiv1.ServiceAffinityNone
+		Selector:        map[string]string{"name": "hello-pod"},
+		Type:            apiv1.ServiceTypeClusterIP,
+		SessionAffinity: apiv1.ServiceAffinityNone,
 	}
 	service.Spec = svcSpec
-	svcresult, err := clientset.Servicess("k8s-test").Create(service)
-	if err != nil{
+	svcresult, err := clientset.Services("k8s-test").Create(service)
+	if err != nil {
 		panic(err.Error())
-	}else{
-		fmt.Printf("Create service %s \n",svcresult.ObjectMeta.Name)
-	}
+	} else {
+		fmt.Printf("Create service %s \n", svcresult.ObjectMeta.Name)
+	}*/
+	//create
 }
 
 /*
