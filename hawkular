@@ -1,0 +1,40 @@
+The hawkular command
+
+
+1.get the data by id
+curl --insecure -H "Authorization: Bearer Ej2p1ZAqgx72oSsGHU3RIikXDoN3UalYfIpZsCNpsZ0" -H "Hawkular-Tenant: k8s-test" -X GET https://hawkular-metrics.master.example.com/hawkular/metrics/counters/hello-pod%2F692777fb-6246-11e8-b642-fcaa14a963a6%2Fcpu%2Fusage/data |  python -m json.tool 
+
+获得5个平均值的cpu使用情况，每两分钟采集一次数据
+curl --insecure -H "Authorization: Bearer Ej2p1ZAqgx72oSsGHU3RIikXDoN3UalYfIpZsCNpsZ0" -H "Hawkular-Tenant: k8s-test" -X GET https://hawkular-metrics.master.example.com/hawkular/metrics/counters/hello-pod%2F692777fb-6246-11e8-b642-fcaa14a963a6%2Fcpu%2Fusage/data?buckets=5\&start=`date -d -10minutes +%s%3N` |  python -m json.tool 
+
+获取一段时间内数据的平均使用情况而不是采集时间数据的值 可以用于就算使用率。
+curl --insecure -H "Authorization: Bearer Ej2p1ZAqgx72oSsGHU3RIikXDoN3UalYfIpZsCNpsZ0" -H "Hawkular-Tenant: k8s-test" -X GET https://hawkular-metrics.master.example.com/hawkular/metrics/counters/hello-pod%2F692777fb-6246-11e8-b642-fcaa14a963a6%2Fcpu%2Fusage/data?buckets=5\&start=`date -d -10minutes +%s%3N` |  python -m json.tool 
+
+2.all the pods usage cpu (data or rate )
+可以获取pod内所有的container情况，metric数据是按照container为单位组织的。
+ curl --insecure -H "Authorization: Bearer Ej2p1ZAqgx72oSsGHU3RIikXDoN3UalYfIpZsCNpsZ0" -H "Hawkular-Tenant: openshift-infra" -X GET https://hawkular-metrics.master.example.com/hawkular/metrics/counters/data?tags=descriptor_name:cpu/usage,pod_namespace:openshift-infra\&buckets=3\&start=`date -d -10minutes +%s%3N` |  python -m json.tool
+
+3.获取一个pod内所有的container使用情况
+此时不能直接使用上面的例子，需要使用stacked=true参数。
+curl --insecure -H "Authorization: Bearer Ej2p1ZAqgx72oSsGHU3RIikXDoN3UalYfIpZsCNpsZ0" -H "Hawkular-Tenant: k8s-test" -X GET https://hawkular-metrics.master.example.com/hawkular/metrics/counters/rate?tags=descriptor_name:cpu/usage,pod_name:hello-pod\&stacked=true\&buckets=3\&start=`date -d -10minutes +%s%3N` |  python -m json.tool 
+
+4.计算使用的百分比情况(计算的是但个cpu的使用情况，如果是多核会超过100%)
+获得uptime 也就是container的运行时间(毫秒) 然后是纳秒的cpu使用情况，就可以计算百分比了
+如果对container进行了限制，那么分母就是限制的数量limit限制
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
